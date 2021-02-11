@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import tiles1 from "./iii/24support.png";
 import TextField from "@material-ui/core/TextField";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
 import {
   Page,
   Text,
@@ -13,63 +15,34 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { useState } from "react";
-
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    backgroundColor: "#E4E4E4",
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
-});
+import RowsInput from "./Components/RowsInput";
+import TableHead from "./Components/TableHead";
+import "./App.css";
 
 function App() {
-  const [quantity1, setQuantity1] = useState(0);
-  const [quantity2, setQuantity2] = useState(0);
-  const [quantity3, setQuantity3] = useState(0);
-  const [value1, setValue1] = useState(0);
-  const [value2, setValue2] = useState(0);
-  const [value3, setValue3] = useState(0);
+  const [items, setItems] = useState([{ name: "Rohit", rate: 0, quantity: 0 }]);
+  const [itemNo, setItemNo] = useState(1);
   const [labour, setLabour] = useState(0);
-  const [image, setImage] = useState("");
-  const [showBill, setShowBill] = useState(false);
 
-  const MyDocument = () => (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text>Ripplebhai</Text>
-          <Text>Earing Emerald</Text>
+  useEffect(() => {
+    console.log("yuppp");
+    return () => {};
+  }, [items]);
 
-          <Image
-            src={image}
-            style={{ height: 100, width: 100, objectFit: "cover" }}
-          />
-
-          <Text>
-            {quantity1 * value1} = {quantity1} * {value1} &#123;2 emerald &#125;
-          </Text>
-          <Text>
-            {quantity2 * value2} = {quantity2} * {value2} &#123;76 dia &#125;
-          </Text>
-          <Text>
-            {quantity3 * value3} = {quantity3} * {value3} &#123;18 kt &#125;
-          </Text>
-          <Text>{labour} = labout </Text>
-          <Text>{getTotal()} = Total</Text>
-        </View>
-        <View></View>
-      </Page>
-    </Document>
-  );
+  function ondelete(ind) {
+    let temp = items.filter(function (val, index, arr) {
+      return index != ind;
+    });
+    setItems(temp);
+    console.log(items);
+  }
 
   const getTotal = () => {
-    var total =
-      quantity1 * value1 + quantity2 * value2 + quantity3 * value3 + labour * 1;
-    return total;
+    var total = 0;
+    items.map(function (x, i) {
+      total = total + x.quantity * x.rate;
+    });
+    return total + labour;
   };
 
   return (
@@ -87,132 +60,93 @@ function App() {
           padding: 15,
         }}
       >
-        <div className="text-center mb-4">
-          <h4>Ripplebhai</h4>
-          <h5>Earing Emerald</h5>
-        </div>
-        {image && (
-          <img
-            className="my-3"
-            src={image}
-            alt="new"
-            height={100}
-            width={100}
-          />
-        )}
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p>{quantity1 * value1} = </p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setQuantity1(event.target.value)}
-          />
-          <p>*</p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setValue1(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p>{quantity2 * value2} = </p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setQuantity2(event.target.value)}
-          />
-          <p>*</p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setValue2(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p>{quantity3 * value3} = </p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setQuantity3(event.target.value)}
-          />
-          <p>*</p>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setValue3(event.target.value)}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <TextField
-            id="standard-required"
-            type="number"
-            defaultValue={0}
-            style={{ width: 100, marginLeft: 5, marginRight: 5 }}
-            onChange={(event) => setLabour(event.target.value)}
-          />
-          <p> = labour</p>
-        </div>
-        <div>
-          <p style={{ fontWeight: "bold", marginTop: 10 }}>
-            {getTotal()} = Total
-          </p>
-        </div>
-        <input
-          className="my-2"
-          type="file"
-          onChange={(event) =>
-            setImage(URL.createObjectURL(event.target.files[0]))
-          }
-        />
-        <div className="text-center">
-          <Button
-            variant="contained"
-            style={{ width: 100, marginTop: 50, marginBottom: 10 }}
-            color="primary"
-            onClick={() => setShowBill(true)}
-          >
-            Primary
-          </Button>
-        </div>
-
-        {/* <p className="mx-3">hiii</p> */}
-
-        <Modal open={showBill}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PDFViewer
-              className="my-5"
-              style={{ width: "80%", height: "30em", margin: "auto" }}
-            >
-              <MyDocument />
-            </PDFViewer>
-            <Button
-              style={{ width: 100 }}
-              variant="contained"
-              onClick={() => setShowBill(false)}
-            >
-              close
-            </Button>
+        <h3 className="text-center my-3">DETAIL BILL</h3>
+        <div className="row mb-3">
+          <div className="col-6 row">
+            <div className="col-3">Name :</div>
+            <TextField type="text" className="col-9" />
           </div>
-        </Modal>
+          <div
+            className="col-6"
+            style={{ justifyContent: "flex-end", display: "flex" }}
+          >
+            <TextField type="date" />
+          </div>
+        </div>
+        <table>
+          <TableHead />
+          {items.map(function (item, i) {
+            return (
+              <tr>
+                <RowsInput
+                  items={items}
+                  setItems={setItems}
+                  index={i}
+                  qa={item.quantity}
+                  ra={item.rate}
+                  na={item.name}
+                  ondelete={ondelete}
+                />
+                {/* <p>{item.name}</p> */}
+                <td style={{ border: 0 }}>
+                  <IconButton
+                    style={{ padding: 0 }}
+                    aria-label="delete"
+                    onClick={() => {
+                      ondelete(i);
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </td>
+              </tr>
+            );
+          })}
+          <tr>
+            <td colSpan={3} className="labour text-center">
+              Labour
+            </td>
+            <td>
+              <TextField
+                inputProps={{ min: 0, style: { textAlign: "center" } }}
+                placeholder={0}
+                type="number"
+                fullWidth
+                onChange={(event) => setLabour(parseInt(event.target.value))}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th colSpan={3} className="text-center">
+              Total
+            </th>
+            <th className="total">{getTotal()}</th>
+          </tr>
+        </table>
+        <Button
+          className="my-3"
+          onClick={() =>
+            setItems([...items, { name: "", rate: 0, quantity: 0 }])
+          }
+          color="primary"
+          variant="contained"
+        >
+          Add Item
+        </Button>
+        <tr
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={() => console.log(items)}
+            color="secondary"
+            variant="contained"
+          >
+            generate
+          </Button>
+        </tr>
       </div>
     </div>
   );
