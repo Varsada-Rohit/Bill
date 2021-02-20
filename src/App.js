@@ -67,7 +67,7 @@ function App() {
     items.map(function (x) {
       total = total + x.quantity * x.rate;
     });
-    return total + labour;
+    return total + parseInt(labour);
   };
 
   return (
